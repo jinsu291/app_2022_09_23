@@ -28,7 +28,7 @@ public interface ArticleRepository {
             content = #{content}
             </script>
             """)
-    void write(@Param("subject") String subject, @Param("content") String content);
+    void write(@Param("subject") String subject, String content);
 
     @Select("""
             SELECT LAST_INSERT_ID()
@@ -43,4 +43,16 @@ public interface ArticleRepository {
             </script>
             """)
     Article getArticleById(long id);
+
+    @Select("""
+			<script>
+			SELECT A.*
+			FROM article AS A
+			WHERE 1
+			<if test="kw != ''">
+			AND A.subject LIKE CONCAT('%', #{kw}, '%')
+			</if>
+			</script>
+			""")
+    List<Article> search(String kwType, String kw);
 }
